@@ -49,7 +49,19 @@ fn parse_card(line: &str) -> Card {
 }
 
 fn evaluate_card(card: &Card) -> u32 {
+  let win_count = count_winners(card);
+
+  if win_count == 0 {
+    0
+  } else {
+    2_u32.pow(win_count - 1)
+  }
+}
+
+/// returns the count of winning numbers that appear in the card's numbers
+fn count_winners(card: &Card) -> u32 {
   let mut win_count = 0;
+
   // rust analyzer gave me the following & and I don't know why
   for winning_number in &card.winning_numbers {
     if card.numbers.contains(winning_number) {
@@ -57,11 +69,7 @@ fn evaluate_card(card: &Card) -> u32 {
     }
   }
 
-  if win_count == 0 {
-    0
-  } else {
-    2_u32.pow(win_count - 1)
-  }
+  win_count
 }
 
 #[cfg(test)]
