@@ -42,23 +42,27 @@ fn parse_cards(input: &str) -> Vec<Card> {
 }
 
 fn parse_card(line: &str) -> Card {
+  enum InputMode {
+    ReadWinners,
+    ReadNumbers,
+  }
+
   let mut winning_numbers = vec![];
   let mut numbers = vec![];
 
-  let mut i = 0; // input mode; a lazy choice
+  let mut mode = InputMode::ReadWinners;
   for word in line.split(' ') {
     if word == "|" {
       // switch modes once we find a '|'
-      i += 1;
+      mode = InputMode::ReadNumbers;
       continue;
     }
 
     if let Ok(val) = word.parse() {
       // if we have a number, add it based on input mode
-      match i {
-        0 => winning_numbers.push(val),
-        1 => numbers.push(val),
-        _ => panic!("unexpected input mode"),
+      match mode {
+        InputMode::ReadWinners => winning_numbers.push(val),
+        InputMode::ReadNumbers => numbers.push(val),
       }
     }
   }
@@ -94,7 +98,7 @@ fn count_winners(card: &Card) -> u32 {
 }
 
 #[cfg(test)]
-mod day03_tests {
+mod day04_tests {
   use super::*;
 
   #[test]
@@ -111,29 +115,38 @@ mod day03_tests {
 
   #[test]
   fn check_eval_card() {
-    // a scoring card
     let card = Card {
       winning_numbers: vec![41, 48, 83, 86, 17],
       numbers: vec![83, 86, 6, 31, 17, 9, 48, 53],
     };
     let score = 8;
-    assert_eq!(evaluate_card(&card), score);
+    assert_eq!(
+      evaluate_card(&card),
+      score,
+      "regular card: {card:?}, expected score: {score}"
+    );
 
-    // a non-scoring card
     let card = Card {
       winning_numbers: vec![1, 2, 3],
       numbers: vec![4, 5, 6],
     };
     let score = 0;
-    assert_eq!(evaluate_card(&card), score);
+    assert_eq!(
+      evaluate_card(&card),
+      score,
+      "zero-winner card: {card:?}, expected score: {score}"
+    );
 
-    // a single-scoring card
     let card = Card {
       winning_numbers: vec![1, 2, 3],
       numbers: vec![3, 4, 5, 6, 7, 8, 9],
     };
     let score = 1;
-    assert_eq!(evaluate_card(&card), score);
+    assert_eq!(
+      evaluate_card(&card),
+      score,
+      "single-winner card: {card:?}, expected score: {score}"
+    );
   }
 
   #[test]
