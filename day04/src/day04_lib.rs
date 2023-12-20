@@ -10,6 +10,27 @@ pub fn solve(input: &str) -> u32 {
   cards.iter().map(evaluate_card).sum()
 }
 
+pub fn solve_2(input: &str) -> u32 {
+  let cards: Vec<Card> = parse_cards(input);
+
+  let number_of_wins_per_card = cards.iter().map(count_winners).collect::<Vec<u32>>();
+
+  let mut card_counts = vec![1; cards.len()]; // start with one of each card
+  for (id, winner_count) in number_of_wins_per_card
+    .iter()
+    .map(|val| *val as usize)
+    .enumerate()
+  {
+    for i in 1..=winner_count {
+      if id + i < card_counts.len() {
+        card_counts[id + i] += card_counts[id];
+      }
+    }
+  }
+
+  card_counts.iter().sum()
+}
+
 fn parse_cards(input: &str) -> Vec<Card> {
   let mut cards = vec![];
 
@@ -62,7 +83,7 @@ fn evaluate_card(card: &Card) -> u32 {
 fn count_winners(card: &Card) -> u32 {
   let mut win_count = 0;
 
-  // rust analyzer gave me the following & and I don't know why
+  // Q: rust analyzer gave me the following & and I don't know why
   for winning_number in &card.winning_numbers {
     if card.numbers.contains(winning_number) {
       win_count += 1;
@@ -121,5 +142,13 @@ mod day03_tests {
       std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/example.txt")).unwrap();
     let solution = 13;
     assert_eq!(solve(&input), solution);
+  }
+
+  #[test]
+  fn check_solve_2() {
+    let input =
+      std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/assets/example.txt")).unwrap();
+    let solution = 30;
+    assert_eq!(solve_2(&input), solution);
   }
 }
