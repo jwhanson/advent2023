@@ -32,7 +32,7 @@ fn parse(input: &str) -> () {
 }
 
 #[cfg(test)]
-mod tests {
+mod day05_tests {
   use super::*;
 
   #[test]

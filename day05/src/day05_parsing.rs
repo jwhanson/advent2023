@@ -49,7 +49,7 @@ pub fn parse_input(
 }
 
 #[cfg(test)]
-mod day05_tests {
+mod tests {
   use super::*;
 
   #[test]
