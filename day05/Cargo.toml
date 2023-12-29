@@ -1,0 +1,15 @@
+[package]
+name = "day05"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+nom = "7.1.3"
+
+[lib]
+name = "day05_lib"
+path = "src/day05_lib.rs"
+
+[[bin]]
+name = "day05"
+path = "src/day05.rs"
